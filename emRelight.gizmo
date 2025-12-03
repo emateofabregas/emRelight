@@ -6,17 +6,18 @@ Group {
  inputs 3
  knobChanged "import nuke\n\nn = nuke.thisNode()\nk = nuke.thisKnob()\n\n## Picker def\ndef dPos(picker_knob, pos_knob, sampleNode):\n    pos = n\[picker_knob].value()  # The position picker_knob\n    animated = nuke.thisKnob().isAnimated() #If the knob is animated\n            \n    # Check if proxy mode is active\n    if nuke.root().knob('proxy').value():\n        nuke.message('You have to disable proxy mode to use this feature.')\n        \n    #Sample the P_World AOV to get the position\n    else:\n        r = sampleNode.sample('red',  pos\[0], pos\[1],)\n        g = sampleNode.sample('green', pos\[0], pos\[1])\n        b = sampleNode.sample('blue',  pos\[0], pos\[1])\n    \n    # Check the knob if it's animated               \n    if animated:\n        if not n.knob(pos_knob).isAnimated():\n            n.knob(pos_knob).setAnimated()\n        else:\n            n.knob(pos_knob).clearAnimated()\n                        \n    # Set the end_3d knob with the sampled values\n    n\[pos_knob].setValue(\[r, g, b])\n\n## LIGHT PICKER\nif k.name() == 'light':\n    dPos('light', 'light_XYZ', nuke.toNode('Input_N'))\n    dPos('light', 'light_POS', nuke.toNode('Input_P'))\n    \n    \n## CUSTOM INPUTS\nif k.name('inputUtils'):\n    inputUtils = nuke.toNode('InputUtils')\n    \n    if n.knob('inputUtils').value() == 1:\n        # INPUTS CREATION\n        checkInputs = nuke.toNode(\"InputUtils\")\n        if not checkInputs:\n            input = nuke.createNode(\"Input\", inpanel=False)  # Create Input node\n            input\[\"name\"].setValue(\"InputUtils\")\n            #input = input.setName(\"InputUtils\")\n            switchNode = nuke.toNode(\"SwitchUtils\")\n            if switchNode:\n                input.setXYpos(switchNode.xpos() + 0, switchNode.ypos() - 55)\n                switchNode.setInput(1, input)\n                    \n                \n    else:\n        # INPUTS DESTROY\n        inputUtils = nuke.toNode(\"InputUtils\")\n        if nuke.toNode(\"InputUtils\"):\n            nuke.delete(inputUtils)  # Delete 'InputUTILS' if it exists             \n                \n   \n# KNOB CHANGED             \nif k.name() == 'lighttype':\n    if n\['lighttype'].value() == 'Spot':\n        n\['cone'].setVisible(True)\n        n\['gap03'].setVisible(True)\n        n\['hardness'].setVisible(True)\n    else:\n        n\['cone'].setVisible(False)\n        n\['gap03'].setVisible(False) \n        n\['hardness'].setVisible(False)  \n\nif k.name() == 'advanced_mode':   \n    if n\['advanced_mode'].value() == True:\n        n\['advanced_mode_text'].setLabel(\"<font color=pink>Advanced Mode</font>\")\n        n.knobs()\['translate'].setVisible(True)\n        n.knobs()\['translate'].setVisible(True)\n        n.knobs()\['rotate'].setVisible(True)\n        n.knobs()\['scaling'].setVisible(True) \n        n.knobs()\['skew'].setVisible(True)\n        n\['gap0'].setVisible(True) \n        n\['text_shader'].setVisible(True)\n        n\['diffuse'].setVisible(True)  \n        n\['specular'].setVisible(True)  \n        n\['min_shininess'].setVisible(True) \n        n\['max_shininess'].setVisible(True)\n        n\['gap03_1'].setVisible(True)  \n    else:\n        n\['advanced_mode_text'].setLabel(\"Advanced Mode\")\n        n.knobs()\['translate'].setVisible(False)\n        n.knobs()\['rotate'].setVisible(False)\n        n.knobs()\['scaling'].setVisible(False) \n        n.knobs()\['skew'].setVisible(False)\n        n\['gap0'].setVisible(False) \n        n\['text_shader'].setVisible(False)\n        n\['diffuse'].setVisible(False)  \n        n\['specular'].setVisible(False)  \n        n\['min_shininess'].setVisible(False) \n        n\['max_shininess'].setVisible(False) \n        n\['gap03_1'].setVisible(False)  \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                \n                                  "
  tile_color 0x6000ff
- label "\[value falloffType]"
+ label "\[value lighttype]"
  addUserKnob {20 User l emRelight}
- addUserKnob {6 advanced_mode l " " +STARTLINE}
- addUserKnob {26 advanced_mode_text l "Advanced Mode" -STARTLINE T " "}
- addUserKnob {6 remove_rgb l "Remove RGB" -STARTLINE}
- addUserKnob {6 inputUtils l "Input UTILS" -STARTLINE}
+ addUserKnob {6 advanced_mode l " " t "Advanced Mode shows more knobs to adjust the relight more accurately." +STARTLINE}
+ advanced_mode true
+ addUserKnob {26 advanced_mode_text l "<font color=pink>Advanced Mode</font>" -STARTLINE T " "}
+ addUserKnob {6 remove_rgb l "Remove RGB" t "Removes RGB and keeps only the light." -STARTLINE}
+ addUserKnob {6 inputUtils l "Input UTILS" t "Creates a new input in case you have your data in another render, for example. " -STARTLINE}
  inputUtils true
- addUserKnob {6 aaNormals l "AA Normals" -STARTLINE}
- addUserKnob {41 in_3 l N T Input_N.in}
- addUserKnob {41 in_5 l P T Input_P.in}
- addUserKnob {41 in_4 l albedo T Input_Albedo.in}
+ addUserKnob {6 aaNormals l "AA Normals" t "Smooth the Normals/N AOV." -STARTLINE}
+ addUserKnob {41 in_3 l N t "Set N AOV here." T Input_N.in}
+ addUserKnob {41 in_5 l P t "Set P AOV here." T Input_P.in}
+ addUserKnob {41 in_4 l albedo t "Set albedo AOV here." T Input_Albedo.in}
  addUserKnob {13 light_XYZ l "light XYZ" +INVISIBLE}
  light_XYZ {0.602053225 0.07174616307 0.7952259779}
  addUserKnob {13 light_POS l "light POS" +INVISIBLE}
@@ -25,40 +26,40 @@ Group {
  addUserKnob {26 text_light l "@b;Light"}
  addUserKnob {12 light l position t "Pick the position of your light using this knob. It's 100% interactive."}
  light {936 442}
- addUserKnob {41 translate l Translate +HIDDEN T Axis.translate}
- addUserKnob {41 rotate l Rotate +HIDDEN T Axis.rotate}
- addUserKnob {41 scaling l Scale +HIDDEN T Axis.scaling}
- addUserKnob {41 skew l Skew +HIDDEN T Axis.skew}
+ addUserKnob {41 translate l Translate T Axis.translate}
+ addUserKnob {41 rotate l Rotate T Axis.rotate}
+ addUserKnob {41 scaling l Scale T Axis.scaling}
+ addUserKnob {41 skew l Skew T Axis.skew}
  addUserKnob {7 cone l "cone size" +HIDDEN R 0.001 10}
  cone 1
- addUserKnob {26 gap0 l " " +HIDDEN T " "}
- addUserKnob {4 lighttype l "light type" M {Direct Spot ""}}
- addUserKnob {18 exposure R -5 5}
+ addUserKnob {26 gap0 l " " T " "}
+ addUserKnob {4 lighttype l "light type" t "Choose your light type here:\n\nDirect: Light that affects the image.\n\nSpotlight: Light an area of the image." M {Direct Spotlight "" "" "" ""}}
+ addUserKnob {18 exposure t "Controls the exposure of the light. It works following f-Stops (power of 2)." R -5 5}
  exposure 1
  addUserKnob {6 exposure_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
  addUserKnob {6 color_rgb_panelDropped l "panel dropped state" +HIDDEN +STARTLINE}
- addUserKnob {18 multiply R 0 4}
+ addUserKnob {18 multiply t "Multiply the color of the light. " R 0 4}
  multiply {1 1 1}
  addUserKnob {6 multiply_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
  multiply_panelDropped true
  addUserKnob {6 color_rgb_1_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
  color_rgb_1_panelDropped true
- addUserKnob {4 falloffType l "falloff type" t "Falloff type of the light." M {None Lineal Cubic Quadratic "" "" "" "" "" "" "" "" "" "" ""}}
+ addUserKnob {4 falloffType l "falloff type" t "Falloff type of the light." M {None Lineal Cubic Quadratic "" "" "" "" "" "" "" "" "" "" "" "" "" ""}}
  falloffType Quadratic
  addUserKnob {7 falloff t "Controls Falloff contribution." R 0 10}
  falloff 1
  addUserKnob {7 hardness +HIDDEN}
  addUserKnob {26 gap02 l " " T " "}
- addUserKnob {26 text_shader l "@b;Shader" +HIDDEN}
- addUserKnob {7 diffuse l "diffuse white" +HIDDEN R 0 4}
+ addUserKnob {26 text_shader l "@b;Shader"}
+ addUserKnob {7 diffuse l "diffuse white" t "Controls the contribution of the white diffuse." R 0 4}
  diffuse 0.18
- addUserKnob {7 specular l "specular whitie" +HIDDEN R 0 4}
+ addUserKnob {7 specular l "specular whitie" t "Controls the contribution of the white specular." R 0 4}
  specular 0.18
- addUserKnob {7 min_shininess l "min shininess" +HIDDEN R 0 100}
+ addUserKnob {7 min_shininess l "min shininess" t "Controls the minimum shininess of the specular white. The shininess follows the luminance." R 0 100}
  min_shininess 10.5
- addUserKnob {7 max_shininess l "max shininess" +HIDDEN R 0 100}
+ addUserKnob {7 max_shininess l "max shininess" t "Controls the maximum shininess of the specular white. The shininess follows the luminance." R 0 100}
  max_shininess 50
- addUserKnob {26 gap03_1 l " " +HIDDEN T " "}
+ addUserKnob {26 gap03_1 l " " T " "}
  addUserKnob {26 gap03 l " " +HIDDEN T " "}
  addUserKnob {26 autor l "" +STARTLINE T "<font color=\"grey\">emRelight v1.0 | emateofabregas | 2025 </font>"}
 }
