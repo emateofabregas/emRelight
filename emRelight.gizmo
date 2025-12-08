@@ -44,7 +44,7 @@ Group {
  color_rgb_1_panelDropped true
  addUserKnob {4 falloffType l "falloff type" t "Falloff type of the light." M {None Lineal Cubic Quadratic "" "" "" "" "" "" "" "" "" "" "" "" "" ""}}
  falloffType Lineal
- addUserKnob {7 falloff t "Controls Falloff contribution." R 0 10}
+ addUserKnob {7 falloff t "Controls Falloff contribution." R 0 4}
  falloff 1
  addUserKnob {7 hardness t "Controls the hardness of the light in the spotlight type." +HIDDEN}
  addUserKnob {26 gap02 l " " T " "}
