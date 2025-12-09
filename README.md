@@ -8,3 +8,7 @@ You have control over where you want to pick the light position.
 ![emRelight_gizmo](https://github.com/user-attachments/assets/e38aa2e5-6f70-4f27-be5a-32258d01e5cf)
 
 You will find all the knobs' info in the tooltip. Enjoy!
+
+
+## Future updates:
+- Improve position of light knob animation.
